@@ -3,16 +3,16 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "channels_WebChatChannel_enablePreview": {
-            "value": null
+            "value": "weather-bot-web-channels"
         },
         "sites_TecBotTest_name": {
-            "value": null
+            "value": "weather-bot-site"
         },
         "serverfarms_TecBotTest_name": {
-            "value": null
+            "value": "weather-bot-plan"
         },
         "botServices_TecBotTest_name": {
-            "value": null
+            "value": "weather-bot-services"
         }
     }
 }
