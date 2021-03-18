@@ -1,0 +1,14 @@
+[import](common.lg)
+
+# SendActivity_K9OAkT()
+- Vamos a averiguar el clima
+# TextInput_Prompt_rJ3rAy()
+- ¿Cuál es ciudad? (ingresa el nombre de tu país o con el siguiente formato: London,uk)
+# TextInput_InvalidPrompt_rJ3rAy()
+- Ese no es un código postal válido, por favor intentalo de nuevo
+# SendActivity_sLWvQy()
+- El clima es ${dialog.weather.weather[0].main} y la temperatura es de ${dialog.weather.main.temp}&deg;
+# SendActivity_A0bmgw()
+- Ocurrió un error
+# SendActivity_f1YLYp()
+- Ok, veamos cómo está el clima en la región de: ${user.zipcode}

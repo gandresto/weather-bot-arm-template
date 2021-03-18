@@ -1,0 +1,256 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "channels_WebChatChannel_enablePreview": {
+            "type": "Bool"
+        },
+        "sites_TecBotTest_name": {
+            "defaultValue": "TecBotTest",
+            "type": "String"
+        },
+        "serverfarms_TecBotTest_name": {
+            "defaultValue": "TecBotTest",
+            "type": "String"
+        },
+        "botServices_TecBotTest_name": {
+            "defaultValue": "TecBotTest",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.BotService/botServices",
+            "apiVersion": "2020-06-02",
+            "name": "[parameters('botServices_TecBotTest_name')]",
+            "location": "global",
+            "sku": {
+                "name": "F0"
+            },
+            "kind": "bot",
+            "properties": {
+                "displayName": "[parameters('botServices_TecBotTest_name')]",
+                "iconUrl": "https://docs.botframework.com/static/devportal/client/images/bot-framework-default.png",
+                "endpoint": "https://tecbottest.azurewebsites.net/api/messages",
+                "msaAppId": "04234462-2a7d-4999-a54d-ee87fedb9a25",
+                "luisAppIds": [],
+                "isCmekEnabled": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2018-02-01",
+            "name": "[parameters('serverfarms_TecBotTest_name')]",
+            "location": "South Central US",
+            "sku": {
+                "name": "S1",
+                "tier": "Standard",
+                "size": "S1",
+                "family": "S",
+                "capacity": 1
+            },
+            "kind": "app",
+            "properties": {
+                "perSiteScaling": false,
+                "maximumElasticWorkerCount": 1,
+                "isSpot": false,
+                "reserved": false,
+                "isXenon": false,
+                "hyperV": false,
+                "targetWorkerCount": 0,
+                "targetWorkerSizeId": 0
+            }
+        },
+        {
+            "type": "Microsoft.BotService/botServices/channels",
+            "apiVersion": "2020-06-02",
+            "name": "[concat(parameters('botServices_TecBotTest_name'), '/WebChatChannel')]",
+            "location": "global",
+            "dependsOn": [
+                "[resourceId('Microsoft.BotService/botServices', parameters('botServices_TecBotTest_name'))]"
+            ],
+            "properties": {
+                "properties": {
+                    "sites": [
+                        {
+                            "siteName": "Default Site",
+                            "isEnabled": true,
+                            "enablePreview": "[parameters('channels_WebChatChannel_enablePreview')]"
+                        }
+                    ]
+                },
+                "channelName": "WebChatChannel"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2018-11-01",
+            "name": "[parameters('sites_TecBotTest_name')]",
+            "location": "South Central US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_TecBotTest_name'))]"
+            ],
+            "kind": "app",
+            "properties": {
+                "enabled": true,
+                "hostNameSslStates": [
+                    {
+                        "name": "tecbottest.azurewebsites.net",
+                        "sslState": "Disabled",
+                        "hostType": "Standard"
+                    },
+                    {
+                        "name": "tecbottest.scm.azurewebsites.net",
+                        "sslState": "Disabled",
+                        "hostType": "Repository"
+                    }
+                ],
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('serverfarms_TecBotTest_name'))]",
+                "reserved": false,
+                "isXenon": false,
+                "hyperV": false,
+                "siteConfig": {},
+                "scmSiteAlsoStopped": false,
+                "clientAffinityEnabled": true,
+                "clientCertEnabled": false,
+                "hostNamesDisabled": false,
+                "containerSize": 0,
+                "dailyMemoryTimeQuota": 0,
+                "httpsOnly": false,
+                "redundancyMode": "None"
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/config",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_TecBotTest_name'), '/web')]",
+            "location": "South Central US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_TecBotTest_name'))]"
+            ],
+            "properties": {
+                "numberOfWorkers": 1,
+                "defaultDocuments": [
+                    "Default.htm",
+                    "Default.html",
+                    "Default.asp",
+                    "index.htm",
+                    "index.html",
+                    "iisstart.htm",
+                    "default.aspx",
+                    "index.php",
+                    "hostingstart.html"
+                ],
+                "netFrameworkVersion": "v4.0",
+                "phpVersion": "5.6",
+                "requestTracingEnabled": false,
+                "remoteDebuggingEnabled": false,
+                "httpLoggingEnabled": false,
+                "logsDirectorySizeLimit": 35,
+                "detailedErrorLoggingEnabled": false,
+                "publishingUsername": "$TecBotTest",
+                "azureStorageAccounts": {},
+                "scmType": "None",
+                "use32BitWorkerProcess": true,
+                "webSocketsEnabled": false,
+                "alwaysOn": false,
+                "managedPipelineMode": "Integrated",
+                "virtualApplications": [
+                    {
+                        "virtualPath": "/",
+                        "physicalPath": "site\\wwwroot",
+                        "preloadEnabled": false
+                    }
+                ],
+                "loadBalancing": "LeastRequests",
+                "experiments": {
+                    "rampUpRules": []
+                },
+                "autoHealEnabled": false,
+                "cors": {
+                    "allowedOrigins": [
+                        "https://botservice.hosting.portal.azure.net",
+                        "https://hosting.onecloud.azure-test.net/"
+                    ],
+                    "supportCredentials": false
+                },
+                "localMySqlEnabled": false,
+                "ipSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 1,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictions": [
+                    {
+                        "ipAddress": "Any",
+                        "action": "Allow",
+                        "priority": 1,
+                        "name": "Allow all",
+                        "description": "Allow all access"
+                    }
+                ],
+                "scmIpSecurityRestrictionsUseMain": false,
+                "http20Enabled": false,
+                "minTlsVersion": "1.2",
+                "ftpsState": "AllAllowed",
+                "reservedInstanceCount": 0
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_TecBotTest_name'), '/172ca8948b8d46cb9a76e176d61cfa06')]",
+            "location": "South Central US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_TecBotTest_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "ZipDeploy",
+                "message": "Created via a push deployment",
+                "start_time": "2021-03-16T21:58:10.1460936Z",
+                "end_time": "2021-03-16T21:58:22.8329226Z",
+                "active": false
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/deployments",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_TecBotTest_name'), '/9c2dd45dd79e40e392cb158210dea7b3')]",
+            "location": "South Central US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_TecBotTest_name'))]"
+            ],
+            "properties": {
+                "status": 4,
+                "author_email": "N/A",
+                "author": "N/A",
+                "deployer": "ZipDeploy",
+                "message": "Created via a push deployment",
+                "start_time": "2021-03-17T16:11:09.210038Z",
+                "end_time": "2021-03-17T16:11:16.7537545Z",
+                "active": true
+            }
+        },
+        {
+            "type": "Microsoft.Web/sites/hostNameBindings",
+            "apiVersion": "2018-11-01",
+            "name": "[concat(parameters('sites_TecBotTest_name'), '/', parameters('sites_TecBotTest_name'), '.azurewebsites.net')]",
+            "location": "South Central US",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/sites', parameters('sites_TecBotTest_name'))]"
+            ],
+            "properties": {
+                "siteName": "TecBotTest",
+                "hostNameType": "Verified"
+            }
+        }
+    ]
+}

@@ -1,0 +1,108 @@
+{
+  "$kind": "Microsoft.AdaptiveDialog",
+  "$designer": {
+    "id": "M8qRz3",
+    "name": "obtenerClima",
+    "description": ""
+  },
+  "autoEndDialog": true,
+  "defaultResultProperty": "dialog.result",
+  "triggers": [
+    {
+      "$kind": "Microsoft.OnBeginDialog",
+      "$designer": {
+        "name": "BeginDialog",
+        "description": "",
+        "id": "sUfZL2"
+      },
+      "actions": [
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "K9OAkT"
+          },
+          "activity": "${SendActivity_K9OAkT()}"
+        },
+        {
+          "$kind": "Microsoft.TextInput",
+          "$designer": {
+            "id": "rJ3rAy"
+          },
+          "disabled": false,
+          "maxTurnCount": 3,
+          "alwaysPrompt": false,
+          "allowInterruptions": false,
+          "prompt": "${TextInput_Prompt_rJ3rAy()}",
+          "unrecognizedPrompt": "",
+          "invalidPrompt": "${TextInput_InvalidPrompt_rJ3rAy()}",
+          "defaultValueResponse": "",
+          "property": "user.zipcode",
+          "validations": [],
+          "outputFormat": "=trim(this.value)",
+          "defaultValue": "98052"
+        },
+        {
+          "$kind": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "f1YLYp"
+          },
+          "activity": "${SendActivity_f1YLYp()}"
+        },
+        {
+          "$kind": "Microsoft.HttpRequest",
+          "$designer": {
+            "id": "gtrQmP"
+          },
+          "method": "GET",
+          "headers": {},
+          "resultProperty": "dialog.api_response",
+          "responseType": "json",
+          "url": "http://api.openweathermap.org/data/2.5/weather?q=${user.zipcode}&lang=sp&APPID=c23962feb670a6752ca1159423a7bf8f&units=metric"
+        },
+        {
+          "$kind": "Microsoft.IfCondition",
+          "$designer": {
+            "id": "aA9Uth"
+          },
+          "condition": "= dialog.api_response.statusCode == 200",
+          "actions": [
+            {
+              "$kind": "Microsoft.SetProperty",
+              "$designer": {
+                "id": "bBUGLS"
+              },
+              "property": "dialog.weather",
+              "value": "=dialog.api_response.content"
+            },
+            {
+              "$kind": "Microsoft.SendActivity",
+              "$designer": {
+                "id": "sLWvQy"
+              },
+              "activity": "${SendActivity_sLWvQy()}"
+            }
+          ],
+          "elseActions": [
+            {
+              "$kind": "Microsoft.SendActivity",
+              "$designer": {
+                "id": "A0bmgw"
+              },
+              "activity": "${SendActivity_A0bmgw()}"
+            }
+          ]
+        },
+        {
+          "$kind": "Microsoft.DeleteProperty",
+          "$designer": {
+            "id": "YJU2um"
+          },
+          "property": "user.zipcode"
+        }
+      ]
+    }
+  ],
+  "generator": "obtenerClima.lg",
+  "recognizer": "obtenerClima.lu.qna",
+  "id": "obtenerClima"
+}

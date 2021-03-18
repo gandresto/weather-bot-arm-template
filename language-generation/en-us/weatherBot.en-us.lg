@@ -1,0 +1,10 @@
+[import](common.lg)
+
+# SendActivity_Welcome()
+- ¡Hola! Soy un Bot para ayudarte a conocer el clima en tu vecindario.
+# SendActivity_GlM7Pt()
+- Disculpa, aún estoy aprendiendo y no entendí eso último.
+# SendActivity_6JiI9S()
+- Ah, dijiste "Hola"
+# QnAMakerDialog_NoAnswer_nEWm21()
+- Lo siento no encontré tu respuesta..
