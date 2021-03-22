@@ -17,7 +17,7 @@ steps:
     feedsToUse: 'config'
 - task: VSBuild@1
   inputs:
-    solution: '**\*.sln'
+    solution: '*.sln'
     msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:PackageLocation="$(Build.ArtifactStagingDirectory)/package/$(Build.BuildId).zip"'
 - task: PublishBuildArtifacts@1
   inputs:
